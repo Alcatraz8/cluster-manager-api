@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import portifolio.conteiner_analyzer.configuration.Views;
-import portifolio.conteiner_analyzer.conteiner.Metric;
+import portifolio.conteiner_analyzer.conteiner.Metrics;
 import portifolio.conteiner_analyzer.entities.Customer;
 import portifolio.conteiner_analyzer.repository.CustomerRepository;
 import portifolio.conteiner_analyzer.service.CustomerService;
@@ -50,9 +50,4 @@ public class CustomerController {
         return repository.findById(id);
     }
 
-    @PostMapping("/metrics")
-    public ResponseEntity<?> saveMetric(@RequestBody Metric metric) {
-        metricService.saveMetric(metric);
-        return ResponseEntity.ok().build();
-    }
 }

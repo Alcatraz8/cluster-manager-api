@@ -27,5 +27,5 @@ public class Node {
 
     @JsonView({Views.NodeView.class})
     @OneToMany(mappedBy = "node")
-    private List<Metric> metrics;
+    private List<Metrics> metrics;
 }
