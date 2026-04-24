@@ -1,9 +1,10 @@
 package portifolio.conteiner_analyzer.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import portifolio.conteiner_analyzer.conteiner.Node;
+import portifolio.conteiner_analyzer.configuration.Views;
 import portifolio.conteiner_analyzer.service.NodeService;
 
 import java.util.Map;
@@ -15,14 +16,18 @@ public class NodeController {
     @Autowired
     private NodeService service;
 
-    @PostMapping("/create")
-    public ResponseEntity<String> createNode(@RequestBody Node node) {
-        service.createNode(node);
+    @JsonView({Views.NodeView.class})
+    @PostMapping("/create-node")
+    public ResponseEntity<String> createNodeContainer(@RequestBody Map<String, String> body) {
+        service.createNodeContainer(body.get("name"));
         return ResponseEntity.ok("Node created successfully");
     }
 
-    @PostMapping("/create-node")
-    public String createNodeContainer(@RequestBody Map<String, String> body) {
-        return service.createNodeContainer(body.get("name"));
+    @JsonView({Views.NodeView.class})
+    @PostMapping("/{clusterId}/nodes")
+    public ResponseEntity<String> createNode(@PathVariable Long clusterId,
+                                             @RequestParam String name) {
+        service.createNodeInCluster(clusterId, name);
+        return ResponseEntity.ok("Node created successfully");
     }
 }

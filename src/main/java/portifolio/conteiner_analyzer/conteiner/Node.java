@@ -20,6 +20,15 @@ public class Node {
     @JsonView({Views.CustomerView.class, Views.NodeView.class})
     private String ip;
 
+    @JsonView({Views.NodeView.class})
+    private String containerId;
+
+    @JsonView({Views.NodeView.class})
+    private String status;
+    
+    @JsonView({Views.NodeView.class})
+    private String image;
+
     @ManyToOne
     @JsonView({Views.NodeView.class})
     @JoinColumn(name = "cluster_id")

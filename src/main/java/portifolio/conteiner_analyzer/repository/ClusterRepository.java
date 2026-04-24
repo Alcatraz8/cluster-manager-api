@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface ClusterRepository extends JpaRepository<Cluster, Long> {
     Optional<Cluster> findById(Long id);
+    Optional<Cluster> findByNetworkName(String networkName);
 }

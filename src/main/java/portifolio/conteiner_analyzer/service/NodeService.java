@@ -19,14 +19,6 @@ public class NodeService {
     @Autowired
     private ClusterRepository clusterRepository;
 
-    public Node createNode(Node node) {
-        Cluster cluster = clusterRepository.findById(node.getCluster().getId())
-                .orElseThrow(() -> new RuntimeException("Cluster not found"));
-
-        node.setCluster(cluster);
-        return repository.save(node);
-    }
-
 
     public String createNodeContainer(String nodeName) {
 
@@ -66,16 +58,70 @@ public class NodeService {
             int exitCode = process.waitFor();
 
             if (exitCode != 0) {
-                throw new RuntimeException("Erro ao criar container: " + error);
+                throw new RuntimeException("Container creation error: " + error);
             }
 
-            System.out.println("CONTAINER CRIADO: " + output);
+            System.out.println("Container created: " + output);
 
-            return output.toString(); // geralmente retorna o container ID
-
+            return output.toString();
         } catch (Exception e) {
             e.printStackTrace();
-            throw new RuntimeException("Erro ao executar docker run", e);
+            throw new RuntimeException("Error running docker run", e);
+        }
+    }
+
+
+    public Node createNodeInCluster(Long clusterId, String nodeName) {
+
+        Cluster cluster = clusterRepository.findById(clusterId)
+                .orElseThrow(() -> new RuntimeException("Cluster not found"));
+
+        try {
+
+            Process process = new ProcessBuilder(
+                    "wsl",
+                    "docker",
+                    "run",
+                    "-d",
+                    "--name", nodeName,
+                    "--network", cluster.getNetworkName(),
+                    "nginx"
+            ).start();
+
+            BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(process.getInputStream())
+            );
+
+            BufferedReader errorReader = new BufferedReader(
+                    new InputStreamReader(process.getErrorStream())
+            );
+
+            String containerId = reader.readLine();
+
+            String errorLine;
+            StringBuilder error = new StringBuilder();
+
+            while ((errorLine = errorReader.readLine()) != null) {
+                error.append(errorLine);
+            }
+
+            int exitCode = process.waitFor();
+
+            if (exitCode != 0) {
+                throw new RuntimeException("Container creation error: " + error);
+            }
+
+            Node node = new Node();
+            node.setName(nodeName);
+            node.setCluster(cluster);
+            node.setContainerId(containerId);
+            node.setStatus("RUNNING");
+            node.setImage("nginx");
+
+            return repository.save(node);
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error creating node in cluster", e);
         }
     }
 

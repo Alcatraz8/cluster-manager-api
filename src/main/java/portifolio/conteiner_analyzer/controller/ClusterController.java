@@ -27,12 +27,13 @@ public class ClusterController {
         return repository.findAll();
     }
 
-    @GetMapping("{id}")
     @JsonView(Views.ClusterView.class)
+    @GetMapping("{id}")
     public Optional<Cluster> findById(@PathVariable Long id) {
         return repository.findById(id);
     }
 
+    @JsonView(Views.ClusterView.class)
     @PostMapping("/create/{customerId}")
     public ResponseEntity<String> createCluster(@PathVariable Long customerId,
                                                 @RequestBody Cluster cluster) {
@@ -40,4 +41,5 @@ public class ClusterController {
 
         return ResponseEntity.ok("Cluster created successfully");
     }
+
 }

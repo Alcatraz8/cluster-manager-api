@@ -18,7 +18,7 @@ public class Cluster {
     private Long id;
 
     @JsonView({Views.ClusterView.class, Views.CustomerView.class})
-    private String name;
+    private String networkName;
 
     @ManyToOne
     @JoinColumn(name = "customer_id")
