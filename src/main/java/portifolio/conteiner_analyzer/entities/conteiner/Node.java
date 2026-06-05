@@ -1,4 +1,4 @@
-package portifolio.conteiner_analyzer.conteiner;
+package portifolio.conteiner_analyzer.entities.conteiner;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.*;
@@ -15,26 +15,40 @@ public class Node {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @JsonView({Views.CustomerView.class, Views.NodeView.class})
     private String name;
-    @JsonView({Views.CustomerView.class, Views.NodeView.class})
+
+    @JsonView({Views.NodeView.class})
     private String ip;
 
     @JsonView({Views.NodeView.class})
     private String containerId;
 
     @JsonView({Views.NodeView.class})
-    private String status;
-    
-    @JsonView({Views.NodeView.class})
     private String image;
 
-    @ManyToOne
     @JsonView({Views.NodeView.class})
-    @JoinColumn(name = "cluster_id")
-    private Cluster cluster;
+    private String status;
 
     @JsonView({Views.NodeView.class})
+    private String ports;
+
+    @JsonView({Views.NodeView.class})
+    private String command;
+
+    @JsonView({Views.NodeView.class})
+    private String createdAt;
+
+    @JsonView({Views.NodeView.class})
+    private String uptime;
+
+    @ManyToOne
+    @JoinColumn(name = "cluster_id")
+    @JsonView({Views.NodeView.class})
+    private Cluster cluster;
+
     @OneToMany(mappedBy = "node")
+    @JsonView({Views.NodeView.class})
     private List<Metrics> metrics;
 }

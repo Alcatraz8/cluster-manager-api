@@ -1,7 +1,7 @@
 package portifolio.conteiner_analyzer.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import portifolio.conteiner_analyzer.conteiner.Metrics;
+import portifolio.conteiner_analyzer.entities.conteiner.Metrics;
 
 import java.util.List;
 

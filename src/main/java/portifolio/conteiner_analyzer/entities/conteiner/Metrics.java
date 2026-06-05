@@ -1,4 +1,4 @@
-package portifolio.conteiner_analyzer.conteiner;
+package portifolio.conteiner_analyzer.entities.conteiner;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.*;

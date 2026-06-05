@@ -3,6 +3,7 @@ package portifolio.conteiner_analyzer.controller;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import portifolio.conteiner_analyzer.configuration.Views;
 import portifolio.conteiner_analyzer.entities.User;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +22,9 @@ public class UserController {
 
     @Autowired
     private UserRepository repository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
 
     @PostMapping("/signUp")
@@ -41,10 +45,32 @@ public class UserController {
         return repository.findAll();
     }
 
-    @GetMapping("/{id}")
     @JsonView(Views.UserView.class)
+    @GetMapping("/{id}")
     public Optional<User> findById(@PathVariable Long id) {
         return repository.findById(id);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<String> updateUser (@PathVariable Long id, @RequestBody User updatedUser){
+
+        repository.findById(id)
+                .map( user -> {
+                    user.setUsername(updatedUser.getUsername());
+                    user.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
+
+
+                    repository.save(user);
+
+                    return ResponseEntity.ok(user);
+                });
+        return  ResponseEntity.ok("User updated successfully");
+
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteUser(@PathVariable Long id) {
+        repository.deleteById(id);
+        return ResponseEntity.ok("deleted");
+    }
 }

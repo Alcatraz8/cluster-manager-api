@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import portifolio.conteiner_analyzer.configuration.Views;
-import portifolio.conteiner_analyzer.conteiner.Metrics;
+import portifolio.conteiner_analyzer.entities.conteiner.Metrics;
 import portifolio.conteiner_analyzer.repository.MetricRepository;
 import portifolio.conteiner_analyzer.service.MetricService;
 

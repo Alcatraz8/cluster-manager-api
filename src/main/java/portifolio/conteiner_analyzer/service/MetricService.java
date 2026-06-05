@@ -2,8 +2,8 @@ package portifolio.conteiner_analyzer.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import portifolio.conteiner_analyzer.conteiner.Metrics;
-import portifolio.conteiner_analyzer.conteiner.Node;
+import portifolio.conteiner_analyzer.entities.conteiner.Metrics;
+import portifolio.conteiner_analyzer.entities.conteiner.Node;
 import portifolio.conteiner_analyzer.repository.MetricRepository;
 import portifolio.conteiner_analyzer.repository.NodeRepository;
 
