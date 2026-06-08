@@ -1,4 +1,4 @@
-# 🧠 Container Manager
+# Container Manager
 
 Container Manager is a backend system built with Spring Boot for managing Docker containers, nodes, clusters, and customers.
 
