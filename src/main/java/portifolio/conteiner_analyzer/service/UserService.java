@@ -16,7 +16,7 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
 
     public User signup(User user) {
-        if (repository.existsByUsername(user.getUsername())) {
+        if (repository.existsByLogin(user.getLogin())) {
             throw new RuntimeException("User name already exists");
         }
 
@@ -25,8 +25,8 @@ public class UserService {
         return repository.save(user);
     }
 
-    public User signIn(String username, String password) {
-        User user = repository.findByUsername(username)
+    public User signIn(String login, String password) {
+        User user = repository.findByLogin(login)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new RuntimeException("Ivalid email or password");

@@ -11,6 +11,7 @@ import portifolio.conteiner_analyzer.service.NodeService;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/nodes")
@@ -27,19 +28,28 @@ public class NodeController {
     public List<Node> findAll() {
       return repository.findAll();
     }
+    @JsonView({Views.NodeView.class})
+    @GetMapping("/{nodeId}")
+    public Optional<Node> findById(@PathVariable Long nodeId) {
+        return repository.findById(nodeId);
+    }
 
     @JsonView({Views.NodeView.class})
-    @PostMapping("/create-node")
-    public ResponseEntity<String> createNodeContainer(@RequestBody Map<String, String> body) {
-        service.createNodeContainer(body.get("name"));
+    @PostMapping("/customer/{customerId}/node")
+    public ResponseEntity<String> createNodeContainer(@PathVariable Long customerId,
+            @RequestBody Map<String, String> body) {
+       service.createNodeContainer(customerId, body.get("name"));
+
         return ResponseEntity.ok("Node created successfully");
     }
 
     @JsonView({Views.NodeView.class})
-    @PostMapping("/{clusterId}/nodes")
-    public ResponseEntity<String> createNode(@PathVariable Long clusterId,
-                                             @RequestParam String name) {
-        service.createNodeInCluster(clusterId, name);
+    @PostMapping("/cluster/{clusterId}")
+    public ResponseEntity<String> createNodeInCluster(@PathVariable Long clusterId,
+                                                      @RequestBody Map<String, String> body) {
+        service.createNodeInCluster(clusterId, body.get("name"));
+
         return ResponseEntity.ok("Node created successfully");
     }
+
 }

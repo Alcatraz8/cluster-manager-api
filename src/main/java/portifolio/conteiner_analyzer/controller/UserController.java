@@ -35,7 +35,7 @@ public class UserController {
 
     @PostMapping("/signIn")
     public ResponseEntity<String> signIn (@RequestBody User loginRequest) {
-        service.signIn(loginRequest.getUsername(), loginRequest.getPassword());
+        service.signIn(loginRequest.getLogin(), loginRequest.getPassword());
         return ResponseEntity.ok("Welcome!");
     }
 
@@ -52,14 +52,13 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateUser (@PathVariable Long id, @RequestBody User updatedUser){
+    public ResponseEntity<String> updateUser(@PathVariable Long id, @RequestBody User updatedUser){
 
         repository.findById(id)
                 .map( user -> {
-                    user.setUsername(updatedUser.getUsername());
+                    user.setLogin(updatedUser.getLogin());
                     user.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
-
-
+                    
                     repository.save(user);
 
                     return ResponseEntity.ok(user);

@@ -14,7 +14,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @JsonView(Views.UserView.class)
-    private String username;
+    private String login;
 
     private String password;
 

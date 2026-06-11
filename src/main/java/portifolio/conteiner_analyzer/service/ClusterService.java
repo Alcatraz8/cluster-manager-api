@@ -17,7 +17,7 @@ public class ClusterService {
     private CustomerRepository customerRepository;
 
 
-    public Cluster createCluster(Cluster cluster, Long customerId) {
+    public void createCluster(Cluster cluster, Long customerId) {
 
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new RuntimeException("Customer not found"));
@@ -55,7 +55,7 @@ public class ClusterService {
         cluster.setCustomer(customer);
         cluster.setNetworkName(networkName);
 
-        return repository.save(cluster);
+        repository.save(cluster);
     }
 }
 
