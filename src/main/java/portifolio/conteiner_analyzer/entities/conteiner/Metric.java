@@ -9,18 +9,26 @@ import java.time.LocalDateTime;
 
 @Entity
 @Data
-public class Metrics {
+public class Metric {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @JsonView({Views.MetricView.class})
-    private double cpuUsage;
+    private Double cpuUsage;
+
     @JsonView({Views.MetricView.class})
-    private double memoryUsage;
+    private Double memoryUsage;
+
     @JsonView({Views.MetricView.class})
-    private double diskUsage;
+    private Double diskUsage;
+
+    @JsonView({Views.MetricView.class})
+    private Double networkUsage;
+
+    @JsonView({Views.MetricView.class})
+    private Double memoryLimit;
 
     @JsonView({Views.MetricView.class})
     private LocalDateTime timestamp;

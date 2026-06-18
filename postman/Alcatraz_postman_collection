@@ -545,7 +545,7 @@
               }
             },
             "url": {
-              "raw": "http://localhost:8080/customer/metrics",
+              "raw": "http://localhost:8080/customer/metric",
               "protocol": "http",
               "host": [
                 "localhost"
@@ -553,7 +553,7 @@
               "port": "8080",
               "path": [
                 "customer",
-                "metrics"
+                "metric"
               ]
             }
           },
@@ -574,7 +574,7 @@
               }
             },
             "url": {
-              "raw": "http://localhost:8080/customer/metrics",
+              "raw": "http://localhost:8080/customer/metric",
               "protocol": "http",
               "host": [
                 "localhost"
@@ -582,14 +582,14 @@
               "port": "8080",
               "path": [
                 "customer",
-                "metrics"
+                "metric"
               ]
             }
           },
           "response": []
         },
         {
-          "name": "metrics findAll",
+          "name": "metric findAll",
           "protocolProfileBehavior": {
             "disableBodyPruning": true
           },
@@ -606,21 +606,21 @@
               }
             },
             "url": {
-              "raw": "http://localhost:8080/metrics",
+              "raw": "http://localhost:8080/metric",
               "protocol": "http",
               "host": [
                 "localhost"
               ],
               "port": "8080",
               "path": [
-                "metrics"
+                "metric"
               ]
             }
           },
           "response": []
         },
         {
-          "name": "metrics stats",
+          "name": "metric stats",
           "request": {
             "method": "GET",
             "header": [],

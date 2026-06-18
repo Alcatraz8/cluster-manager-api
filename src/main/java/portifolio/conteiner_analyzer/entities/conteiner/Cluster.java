@@ -25,6 +25,5 @@ public class Cluster {
     private Customer customer;
 
     @OneToMany(mappedBy = "cluster")
-    @JsonView(Views.ClusterView.class)
     private List<Node> nodes;
 }

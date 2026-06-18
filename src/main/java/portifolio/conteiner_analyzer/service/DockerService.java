@@ -22,7 +22,7 @@ public class DockerService {
                     "stats",
                     "--no-stream",
                     "--format",
-                    "{{.Name}} {{.CPUPerc}} {{.MemUsage}}"
+                    "{{json .}}"
             ).start();
 
             BufferedReader reader = new BufferedReader(
@@ -41,16 +41,18 @@ public class DockerService {
             String line;
 
             while ((line = reader.readLine()) != null) {
-                System.out.println("DOCKER OUTPUT: " + line);
                 resultList.add(line);
             }
 
             int exitCode = process.waitFor();
+
             System.out.println("EXIT CODE: " + exitCode);
 
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException("Erro ao executar docker stats", e);
+            throw new RuntimeException(
+                    "Error executing stats",
+                    e
+            );
         }
 
         return resultList;

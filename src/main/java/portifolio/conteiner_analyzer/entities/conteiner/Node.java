@@ -6,6 +6,7 @@ import lombok.Data;
 import portifolio.conteiner_analyzer.configuration.Views;
 import portifolio.conteiner_analyzer.entities.Customer;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -21,7 +22,7 @@ public class Node {
     private String name;
 
     @JsonView({Views.NodeView.class})
-    private String ip;
+    private String ipAddress;
 
     @JsonView({Views.NodeView.class})
     private String containerId;
@@ -30,22 +31,19 @@ public class Node {
     private String image;
 
     @JsonView({Views.NodeView.class})
-    private String status;
-
-    @JsonView({Views.NodeView.class})
     private String ports;
 
     @JsonView({Views.NodeView.class})
     private String command;
 
     @JsonView({Views.NodeView.class})
-    private String createdAt;
+    private LocalDateTime createdAt;
 
     @JsonView({Views.NodeView.class})
-    private String uptime;
+    @Enumerated(EnumType.STRING)
+    private NodeStatus status;
 
     @ManyToOne
-    @JsonView({Views.NodeView.class})
     private Customer customer;
 
     @ManyToOne
@@ -55,5 +53,5 @@ public class Node {
 
     @OneToMany(mappedBy = "node")
     @JsonView({Views.NodeView.class})
-    private List<Metrics> metrics;
+    private List<Metric> metrics;
 }

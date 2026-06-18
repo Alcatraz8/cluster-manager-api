@@ -23,14 +23,15 @@ public class NodeController {
     @Autowired
     private NodeRepository repository;
 
-    @JsonView({Views.NodeView.class})
     @GetMapping
     public List<Node> findAll() {
       return repository.findAll();
     }
+
     @JsonView({Views.NodeView.class})
     @GetMapping("/{nodeId}")
     public Optional<Node> findById(@PathVariable Long nodeId) {
+        service.refreshNodeInfo(nodeId);
         return repository.findById(nodeId);
     }
 
@@ -50,6 +51,13 @@ public class NodeController {
         service.createNodeInCluster(clusterId, body.get("name"));
 
         return ResponseEntity.ok("Node created successfully");
+    }
+
+    @DeleteMapping("/{nodeId}")
+    public ResponseEntity<String> deleteNode(@PathVariable Long nodeId) {
+        service.deleteNode(nodeId);
+        repository.deleteById(nodeId);
+        return ResponseEntity.ok("Node deleted successfull");
     }
 
 }
