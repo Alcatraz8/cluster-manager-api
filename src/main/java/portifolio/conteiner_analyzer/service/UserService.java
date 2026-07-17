@@ -1,12 +1,13 @@
 package portifolio.conteiner_analyzer.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import portifolio.conteiner_analyzer.DTO.request.UserRequestDTO;
 import portifolio.conteiner_analyzer.DTO.response.UserResponseDTO;
+import portifolio.conteiner_analyzer.entities.Customer;
 import portifolio.conteiner_analyzer.entities.User;
+import portifolio.conteiner_analyzer.repository.CustomerRepository;
 import portifolio.conteiner_analyzer.repository.UserRepository;
 
 import java.util.List;
@@ -16,6 +17,9 @@ public class UserService {
 
     @Autowired
     private UserRepository repository;
+
+    @Autowired
+    private CustomerRepository customerRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -69,6 +73,23 @@ public class UserService {
                 user.getId(),
                 user.getLogin()
         );
+    }
+
+    public void deleteUser(Long id) {
+
+        User user = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Customer customer = user.getCustomer();
+
+        if (customer != null) {
+            customer.setUser(null);
+            user.setCustomer(null);
+
+            customerRepository.delete(customer);
+        }
+
+        repository.delete(user);
     }
 
     public List<UserResponseDTO> findAll() {
