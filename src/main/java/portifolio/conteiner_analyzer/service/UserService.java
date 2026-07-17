@@ -1,10 +1,15 @@
 package portifolio.conteiner_analyzer.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import portifolio.conteiner_analyzer.DTO.request.UserRequestDTO;
+import portifolio.conteiner_analyzer.DTO.response.UserResponseDTO;
 import portifolio.conteiner_analyzer.entities.User;
 import portifolio.conteiner_analyzer.repository.UserRepository;
+
+import java.util.List;
 
 @Service
 public class UserService {
@@ -15,24 +20,71 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public User signup(User user) {
-        if (repository.existsByLogin(user.getLogin())) {
+    public UserResponseDTO signup(UserRequestDTO dto) {
+        if (repository.existsByLogin(dto.login())) {
             throw new RuntimeException("User name already exists");
         }
 
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        User user = new User();
+        user.setLogin(dto.login());
+        user.setPassword(passwordEncoder.encode(dto.password()));
 
-        return repository.save(user);
+        User savedUser = repository.save(user);
+
+        return new UserResponseDTO(
+                savedUser.getId(),
+                savedUser.getLogin()
+        );
     }
 
-    public User signIn(String login, String password) {
-        User user = repository.findByLogin(login)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
-        if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new RuntimeException("Ivalid email or password");
+    public UserResponseDTO signIn(UserRequestDTO dto) {
+        User user = repository.findByLogin(dto.login())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        if (!passwordEncoder.matches(dto.password(), user.getPassword())) {
+            throw new RuntimeException("Invalid login or password");
         }
 
-        return user;
+        return new UserResponseDTO(
+                user.getId(),
+                user.getLogin()
+        );
+    }
+
+    public UserResponseDTO updateUser(Long id, UserRequestDTO dto) {
+
+        User user = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (repository.existsByLogin(dto.login())
+                && !user.getLogin().equals(dto.login())) {
+            throw new RuntimeException("User name already exists");
+        }
+
+        user.setLogin(dto.login());
+        user.setPassword(passwordEncoder.encode(dto.password()));
+
+        repository.save(user);
+
+        return new UserResponseDTO(
+                user.getId(),
+                user.getLogin()
+        );
+    }
+
+    public List<UserResponseDTO> findAll() {
+        return repository.findAll()
+                .stream()
+                .map(user -> new UserResponseDTO(
+                        user.getId(),
+                        user.getLogin())).toList();
+    }
+
+    public UserResponseDTO findById(Long id) {
+        User user = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return new UserResponseDTO(
+                user.getId(),
+                user.getLogin());
     }
 
 }

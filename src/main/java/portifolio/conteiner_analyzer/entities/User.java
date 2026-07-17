@@ -11,6 +11,7 @@ import portifolio.conteiner_analyzer.configuration.Views;
 public class User {
 
     @Id
+    @JsonView(Views.UserView.class)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @JsonView(Views.UserView.class)
