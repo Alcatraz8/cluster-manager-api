@@ -2,8 +2,10 @@ package portifolio.conteiner_analyzer.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import portifolio.conteiner_analyzer.DTO.response.NodeResponseDTO;
 import portifolio.conteiner_analyzer.configuration.Views;
 import portifolio.conteiner_analyzer.entities.conteiner.Node;
 import portifolio.conteiner_analyzer.repository.NodeRepository;
@@ -24,40 +26,34 @@ public class NodeController {
     private NodeRepository repository;
 
     @GetMapping
-    public List<Node> findAll() {
-      return repository.findAll();
+    public ResponseEntity<List<NodeResponseDTO>> findAll() {
+
+        return ResponseEntity.ok().body(service.findAll());
     }
 
-    @JsonView({Views.NodeView.class})
     @GetMapping("/{nodeId}")
-    public Optional<Node> findById(@PathVariable Long nodeId) {
+    public ResponseEntity<NodeResponseDTO> findById(@PathVariable Long nodeId) {
         service.refreshNodeInfo(nodeId);
-        return repository.findById(nodeId);
+        return ResponseEntity.ok().body(service.findById(nodeId));
     }
 
-    @JsonView({Views.NodeView.class})
     @PostMapping("/customer/{customerId}/node")
-    public ResponseEntity<String> createNodeContainer(@PathVariable Long customerId,
+    public ResponseEntity<NodeResponseDTO> createNodeContainer(@PathVariable Long customerId,
             @RequestBody Map<String, String> body) {
-       service.createNodeContainer(customerId, body.get("name"));
-
-        return ResponseEntity.ok("Node created successfully");
+       return ResponseEntity.ok().body(service.createNodeContainer(customerId, body.get("name")));
     }
 
-    @JsonView({Views.NodeView.class})
     @PostMapping("/cluster/{clusterId}")
-    public ResponseEntity<String> createNodeInCluster(@PathVariable Long clusterId,
+    public ResponseEntity<NodeResponseDTO> createNodeInCluster(@PathVariable Long clusterId,
                                                       @RequestBody Map<String, String> body) {
-        service.createNodeInCluster(clusterId, body.get("name"));
-
-        return ResponseEntity.ok("Node created successfully");
+        return ResponseEntity.ok().body(service.createNodeInCluster(clusterId, body.get("name")));
     }
 
     @DeleteMapping("/{nodeId}")
-    public ResponseEntity<String> deleteNode(@PathVariable Long nodeId) {
+    public ResponseEntity<Void> deleteNode(@PathVariable Long nodeId) {
+
         service.deleteNode(nodeId);
-        repository.deleteById(nodeId);
-        return ResponseEntity.ok("Node deleted successfull");
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
 }

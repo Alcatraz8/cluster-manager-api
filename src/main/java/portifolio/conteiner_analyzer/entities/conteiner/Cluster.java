@@ -17,6 +17,10 @@ public class Cluster {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String nickname;
+
+    private String description;
+
     @JsonView({Views.ClusterView.class, Views.CustomerView.class})
     private String networkName;
 

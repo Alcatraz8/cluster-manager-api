@@ -4,8 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import portifolio.conteiner_analyzer.configuration.Views;
-import portifolio.conteiner_analyzer.entities.conteiner.Metric;
+import portifolio.conteiner_analyzer.DTO.response.MetricResponseDTO;
 import portifolio.conteiner_analyzer.repository.MetricRepository;
 import portifolio.conteiner_analyzer.service.MetricService;
 
@@ -21,27 +20,24 @@ public class MetricController {
     @Autowired
     private MetricRepository repository;
 
-    @JsonView({Views.MetricView.class})
-    @PostMapping
-    public ResponseEntity<Metric> create(@RequestBody Metric metric) {
-        return ResponseEntity.ok(service.createMetric(metric));
-    }
-
     @GetMapping
-    @JsonView({Views.MetricView.class})
-    public List<Metric> findAll() {
-        return repository.findAll();
+    public ResponseEntity<List<MetricResponseDTO>> findAll(){
+
+        return ResponseEntity.ok().body(service.findAll());
     }
 
-    @JsonView({Views.MetricView.class})
+    @GetMapping("/node/{metricId}")
+    public ResponseEntity<MetricResponseDTO> findById(@PathVariable Long metricId){
+        return ResponseEntity.ok().body(service.findById(metricId));
+    }
+
     @GetMapping("/node/{nodeId}/last")
-    public ResponseEntity<Metric> getLast(@PathVariable Long nodeId) {
-        return ResponseEntity.ok(service.getLastMetric(nodeId));
+    public ResponseEntity<MetricResponseDTO> getLast(@PathVariable Long nodeId) {
+        return ResponseEntity.ok().body(service.getLastMetric(nodeId));
     }
 
-    @JsonView({Views.MetricView.class})
     @PostMapping("/collect/{nodeId}")
-    public ResponseEntity<Metric> collect(@PathVariable Long nodeId){
-        return ResponseEntity.ok(service.collectMetric(nodeId));
+    public ResponseEntity<MetricResponseDTO> collect(@PathVariable Long nodeId){
+        return ResponseEntity.ok().body(service.collectMetric(nodeId));
     }
 }

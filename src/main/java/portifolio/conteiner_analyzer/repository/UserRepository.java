@@ -1,6 +1,6 @@
 package portifolio.conteiner_analyzer.repository;
 
-import portifolio.conteiner_analyzer.entities.User;
+import  portifolio.conteiner_analyzer.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

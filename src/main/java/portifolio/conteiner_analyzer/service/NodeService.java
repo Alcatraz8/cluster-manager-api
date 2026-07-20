@@ -2,6 +2,7 @@ package portifolio.conteiner_analyzer.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import portifolio.conteiner_analyzer.DTO.response.NodeResponseDTO;
 import portifolio.conteiner_analyzer.entities.Customer;
 import portifolio.conteiner_analyzer.entities.conteiner.Cluster;
 import portifolio.conteiner_analyzer.entities.conteiner.Node;
@@ -14,6 +15,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.util.List;
 
 @Service
 public class NodeService {
@@ -27,7 +29,7 @@ public class NodeService {
     @Autowired
     private CustomerRepository customerRepository;
 
-    public Node createNodeContainer(Long customerId, String nodeName) {
+    public NodeResponseDTO createNodeContainer(Long customerId, String nodeName) {
 
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() ->
@@ -39,16 +41,17 @@ public class NodeService {
 
         node.setName(nodeName);
         node.setContainerId(containerId);
-
         node.setCustomer(customer);
         node.setCluster(null);
 
         populateDockerInfo(node);
 
-        return repository.save(node);
+        Node savedNode = repository.save(node);
+
+        return toResponseDTO(savedNode);
     }
 
-    public Node createNodeInCluster(Long clusterId, String nodeName) {
+    public NodeResponseDTO createNodeInCluster(Long clusterId, String nodeName) {
 
         Cluster cluster = clusterRepository.findById(clusterId)
                 .orElseThrow(() ->
@@ -69,7 +72,9 @@ public class NodeService {
 
         populateDockerInfo(node);
 
-        return repository.save(node);
+        Node savedNode = repository.save(node);
+
+        return toResponseDTO(savedNode);
     }
 
     public void deleteNode(Long nodeId) {
@@ -81,6 +86,19 @@ public class NodeService {
         removeDockerContainer(node.getContainerId());
 
         repository.delete(node);
+    }
+
+    public List<NodeResponseDTO> findAll(){
+        return repository.findAll()
+                .stream()
+                .map(this::toResponseDTO)
+                .toList();
+    }
+
+    public NodeResponseDTO findById(Long nodeId){
+        Node node = repository.findById(nodeId)
+                .orElseThrow(() -> new RuntimeException("Node not found"));
+        return toResponseDTO(node);
     }
 
     private String createDockerContainer(
@@ -252,7 +270,7 @@ public class NodeService {
         };
     }
 
-    public Node refreshNodeInfo(Long nodeId) {
+    public NodeResponseDTO refreshNodeInfo(Long nodeId) {
 
         Node node = repository.findById(nodeId)
                 .orElseThrow(() ->
@@ -260,7 +278,9 @@ public class NodeService {
 
         populateDockerInfo(node);
 
-        return repository.save(node);
+        Node updatedNode = repository.save(node);
+
+        return toResponseDTO(updatedNode);
     }
 
     private void removeDockerContainer(String containerId) {
@@ -290,5 +310,21 @@ public class NodeService {
                     e
             );
         }
+    }
+
+    private NodeResponseDTO toResponseDTO(Node node){
+        return new NodeResponseDTO(
+                node.getId(),
+                node.getName(),
+                node.getIpAddress(),
+                node.getContainerId(),
+                node.getImage(),
+                node.getPorts(),
+                node.getCommand(),
+                node.getCreatedAt(),
+                node.getStatus(),
+                node.getCustomer().getId(),
+                node.getCluster() != null ? node.getCluster().getId() : null
+        );
     }
 }

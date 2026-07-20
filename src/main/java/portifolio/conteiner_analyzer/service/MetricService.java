@@ -3,6 +3,7 @@ package portifolio.conteiner_analyzer.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import portifolio.conteiner_analyzer.DTO.response.MetricResponseDTO;
 import portifolio.conteiner_analyzer.entities.conteiner.Metric;
 import portifolio.conteiner_analyzer.entities.conteiner.Node;
 import portifolio.conteiner_analyzer.repository.MetricRepository;
@@ -25,23 +26,14 @@ public class MetricService {
     @Autowired
     private DockerService dockerService;
 
-    public Metric createMetric(Metric metric) {
 
-        Node node = nodeRepository.findById(metric.getNode().getId())
-                .orElseThrow(() ->
-                        new RuntimeException("Node not found"));
+    public MetricResponseDTO getLastMetric(long nodeId) {
+        Metric metric = repository.findTopByNodeIdOrderByTimestampDesc(nodeId);
 
-        metric.setNode(node);
-        metric.setTimestamp(LocalDateTime.now());
-
-        return repository.save(metric);
+        return toResponseDTO(metric);
     }
 
-    public Metric getLastMetric(long nodeId) {
-        return repository.findTopByNodeIdOrderByTimestampDesc(nodeId);
-    }
-
-    public Metric collectMetric(Long nodeId) {
+    public MetricResponseDTO collectMetric(Long nodeId) {
 
         Node node = nodeRepository.findById(nodeId)
                 .orElseThrow(() ->
@@ -121,7 +113,9 @@ public class MetricService {
 
             metric.setNode(node);
 
-            return repository.save(metric);
+            Metric savedMetric = repository.save(metric);
+
+            return toResponseDTO(savedMetric);
 
         } catch (Exception e) {
 
@@ -130,6 +124,31 @@ public class MetricService {
                     e
             );
         }
+    }
+
+    public List<MetricResponseDTO> findAll(){
+        return repository.findAll()
+                .stream().map(this::toResponseDTO)
+                .toList();
+    }
+
+    public MetricResponseDTO findById(Long id){
+        Metric metric = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Metric not found"));
+        return toResponseDTO(metric);
+    }
+
+    private MetricResponseDTO toResponseDTO(Metric metric){
+        return new MetricResponseDTO(
+                metric.getId(),
+                metric.getCpuUsage(),
+                metric.getMemoryUsage(),
+                metric.getDiskUsage(),
+                metric.getNetworkUsage(),
+                metric.getMemoryLimit(),
+                metric.getTimestamp(),
+                metric.getNode().getId()
+        );
     }
 
     private JsonNode parseJson(String json) {

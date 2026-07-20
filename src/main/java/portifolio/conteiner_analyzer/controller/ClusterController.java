@@ -28,7 +28,7 @@ public class ClusterController {
                 .body(service.findAll());
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<ClusterResponseDTO> findById(@PathVariable Long id) {
         return ResponseEntity
                 .ok()
@@ -42,6 +42,19 @@ public class ClusterController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(service.createCluster(dto, customerId));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ClusterResponseDTO> updateCluster(@PathVariable Long id, @RequestBody ClusterRequestDTO dto){
+        return ResponseEntity.ok().body(service.updateCluster(id, dto));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteCluster(@PathVariable Long id){
+        service.deleteCluster(id);
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .build();
     }
 
 }

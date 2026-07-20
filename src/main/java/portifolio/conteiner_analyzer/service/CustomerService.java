@@ -38,14 +38,7 @@ public class CustomerService {
 
         Customer savedCustomer = repository.save(customer);
 
-        return new CustomerResponseDTO(
-                savedCustomer.getId(),
-                savedCustomer.getName(),
-                savedCustomer.getCompany(),
-                savedCustomer.getEmail(),
-                savedCustomer.getUser().getId()
-        );
-
+        return toResponseDTO(savedCustomer);
     }
 
     public CustomerResponseDTO updateCustomer(Long id, CustomerRequestDTO dto){
@@ -57,16 +50,9 @@ public class CustomerService {
         customer.setEmail(dto.email());
         customer.setCompany(dto.company());
 
-        repository.save(customer);
+        Customer updatedCustomer = repository.save(customer);
 
-        return new CustomerResponseDTO(
-                customer.getId(),
-                customer.getName(),
-                customer.getCompany(),
-                customer.getEmail(),
-                customer.getUser().getId()
-        );
-
+        return toResponseDTO(updatedCustomer);
     }
 
     public void deleteCustomer(Long id) {
@@ -86,19 +72,18 @@ public class CustomerService {
 
     public List<CustomerResponseDTO> findAll(){
         return repository.findAll().stream()
-                .map(customer -> new CustomerResponseDTO(
-                        customer.getId(),
-                        customer.getName(),
-                        customer.getCompany(),
-                        customer.getEmail(),
-                        customer.getUser().getId()
-                )).toList();
+                .map(this::toResponseDTO)
+                .toList();
     }
 
     public CustomerResponseDTO findById(Long id){
         Customer customer = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
+        return toResponseDTO(customer);
+    }
+
+    private CustomerResponseDTO toResponseDTO(Customer customer){
         return new CustomerResponseDTO(
                 customer.getId(),
                 customer.getName(),
