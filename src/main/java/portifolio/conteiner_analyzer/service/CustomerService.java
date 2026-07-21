@@ -6,6 +6,8 @@ import portifolio.conteiner_analyzer.DTO.request.CustomerRequestDTO;
 import portifolio.conteiner_analyzer.DTO.response.CustomerResponseDTO;
 import portifolio.conteiner_analyzer.entities.Customer;
 import portifolio.conteiner_analyzer.entities.User;
+import portifolio.conteiner_analyzer.exception.ResourceAlreadyExistsException;
+import portifolio.conteiner_analyzer.exception.ResourceNotFoundException;
 import portifolio.conteiner_analyzer.repository.CustomerRepository;
 import portifolio.conteiner_analyzer.repository.UserRepository;
 
@@ -23,9 +25,10 @@ public class CustomerService {
     public CustomerResponseDTO createCustomer(CustomerRequestDTO dto) {
 
         User user = userRepository.findById(dto.userId()).orElseThrow(() ->
-                new RuntimeException("User not found"));
+                new ResourceNotFoundException("User not found"));
+
         if (user.getCustomer() != null) {
-            throw new RuntimeException("user already have a customer");
+            throw new ResourceAlreadyExistsException("user already have a customer");
         }
 
         Customer customer = new Customer();
@@ -44,7 +47,7 @@ public class CustomerService {
     public CustomerResponseDTO updateCustomer(Long id, CustomerRequestDTO dto){
 
         Customer customer = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Customer not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
 
         customer.setName(dto.name());
         customer.setEmail(dto.email());
@@ -58,7 +61,7 @@ public class CustomerService {
     public void deleteCustomer(Long id) {
 
         Customer customer = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Customer not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
 
         User user = customer.getUser();
 
@@ -78,7 +81,7 @@ public class CustomerService {
 
     public CustomerResponseDTO findById(Long id){
         Customer customer = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         return toResponseDTO(customer);
     }

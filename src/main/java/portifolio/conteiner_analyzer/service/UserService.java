@@ -7,6 +7,9 @@ import portifolio.conteiner_analyzer.DTO.request.UserRequestDTO;
 import portifolio.conteiner_analyzer.DTO.response.UserResponseDTO;
 import portifolio.conteiner_analyzer.entities.Customer;
 import portifolio.conteiner_analyzer.entities.User;
+import portifolio.conteiner_analyzer.exception.InvalidAuthenticationException;
+import portifolio.conteiner_analyzer.exception.ResourceAlreadyExistsException;
+import portifolio.conteiner_analyzer.exception.ResourceNotFoundException;
 import portifolio.conteiner_analyzer.repository.CustomerRepository;
 import portifolio.conteiner_analyzer.repository.UserRepository;
 
@@ -26,7 +29,7 @@ public class UserService {
 
     public UserResponseDTO signup(UserRequestDTO dto) {
         if (repository.existsByLogin(dto.login())) {
-            throw new RuntimeException("User name already exists");
+            throw new ResourceAlreadyExistsException("User name already exists");
         }
 
         User user = new User();
@@ -43,9 +46,9 @@ public class UserService {
 
     public UserResponseDTO signIn(UserRequestDTO dto) {
         User user = repository.findByLogin(dto.login())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         if (!passwordEncoder.matches(dto.password(), user.getPassword())) {
-            throw new RuntimeException("Invalid login or password");
+            throw new InvalidAuthenticationException("Invalid login or password");
         }
 
         return new UserResponseDTO(
@@ -57,11 +60,11 @@ public class UserService {
     public UserResponseDTO updateUser(Long id, UserRequestDTO dto) {
 
         User user = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         if (repository.existsByLogin(dto.login())
                 && !user.getLogin().equals(dto.login())) {
-            throw new RuntimeException("User name already exists");
+            throw new ResourceAlreadyExistsException("User name already exists");
         }
 
         user.setLogin(dto.login());
@@ -78,7 +81,7 @@ public class UserService {
     public void deleteUser(Long id) {
 
         User user = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         Customer customer = user.getCustomer();
 
@@ -102,7 +105,7 @@ public class UserService {
 
     public UserResponseDTO findById(Long id) {
         User user = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         return new UserResponseDTO(
                 user.getId(),
                 user.getLogin());

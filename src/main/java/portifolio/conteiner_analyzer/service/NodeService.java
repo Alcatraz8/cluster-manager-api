@@ -7,6 +7,7 @@ import portifolio.conteiner_analyzer.entities.Customer;
 import portifolio.conteiner_analyzer.entities.conteiner.Cluster;
 import portifolio.conteiner_analyzer.entities.conteiner.Node;
 import portifolio.conteiner_analyzer.entities.conteiner.NodeStatus;
+import portifolio.conteiner_analyzer.exception.ResourceNotFoundException;
 import portifolio.conteiner_analyzer.repository.ClusterRepository;
 import portifolio.conteiner_analyzer.repository.CustomerRepository;
 import portifolio.conteiner_analyzer.repository.NodeRepository;
@@ -33,7 +34,7 @@ public class NodeService {
 
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() ->
-                        new RuntimeException("Customer not found"));
+                        new ResourceNotFoundException("Customer not found"));
 
         String containerId = createDockerContainer(nodeName, null);
 
@@ -55,7 +56,7 @@ public class NodeService {
 
         Cluster cluster = clusterRepository.findById(clusterId)
                 .orElseThrow(() ->
-                        new RuntimeException("Cluster not found"));
+                        new ResourceNotFoundException("Cluster not found"));
 
         String containerId = createDockerContainer(
                 nodeName,
@@ -81,7 +82,7 @@ public class NodeService {
 
         Node node = repository.findById(nodeId)
                 .orElseThrow(() ->
-                        new RuntimeException("Node not found"));
+                        new ResourceNotFoundException("Node not found"));
 
         removeDockerContainer(node.getContainerId());
 
@@ -97,7 +98,7 @@ public class NodeService {
 
     public NodeResponseDTO findById(Long nodeId){
         Node node = repository.findById(nodeId)
-                .orElseThrow(() -> new RuntimeException("Node not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Node not found"));
         return toResponseDTO(node);
     }
 
@@ -274,7 +275,7 @@ public class NodeService {
 
         Node node = repository.findById(nodeId)
                 .orElseThrow(() ->
-                        new RuntimeException("Node not found"));
+                        new ResourceNotFoundException("Node not found"));
 
         populateDockerInfo(node);
 

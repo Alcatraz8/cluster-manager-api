@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import portifolio.conteiner_analyzer.DTO.response.MetricResponseDTO;
 import portifolio.conteiner_analyzer.entities.conteiner.Metric;
 import portifolio.conteiner_analyzer.entities.conteiner.Node;
+import portifolio.conteiner_analyzer.exception.ResourceNotFoundException;
 import portifolio.conteiner_analyzer.repository.MetricRepository;
 import portifolio.conteiner_analyzer.repository.NodeRepository;
 import tools.jackson.databind.JsonNode;
@@ -37,7 +38,7 @@ public class MetricService {
 
         Node node = nodeRepository.findById(nodeId)
                 .orElseThrow(() ->
-                        new RuntimeException("Node not found"));
+                        new ResourceNotFoundException("Node not found"));
 
         List<String> statsList = dockerService.getStats();
 
@@ -134,7 +135,7 @@ public class MetricService {
 
     public MetricResponseDTO findById(Long id){
         Metric metric = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Metric not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Metric not found"));
         return toResponseDTO(metric);
     }
 

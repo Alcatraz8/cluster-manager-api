@@ -6,6 +6,9 @@ import portifolio.conteiner_analyzer.DTO.request.ClusterRequestDTO;
 import portifolio.conteiner_analyzer.DTO.response.ClusterResponseDTO;
 import portifolio.conteiner_analyzer.entities.conteiner.Cluster;
 import portifolio.conteiner_analyzer.entities.Customer;
+import portifolio.conteiner_analyzer.exception.ResourceAlreadyExistsException;
+import portifolio.conteiner_analyzer.exception.ResourceNotFoundException;
+import portifolio.conteiner_analyzer.exception.UnexpectedErrorException;
 import portifolio.conteiner_analyzer.repository.ClusterRepository;
 import portifolio.conteiner_analyzer.repository.CustomerRepository;
 
@@ -28,16 +31,16 @@ public class ClusterService {
     public ClusterResponseDTO createCluster(ClusterRequestDTO dto, Long customerId) {
 
         Customer customer = customerRepository.findById(customerId)
-                .orElseThrow(() -> new RuntimeException("Customer not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
 
         if (dto.networkName() == null || dto.networkName().isBlank()) {
-            throw new RuntimeException("Cluster name is mandatory");
+            throw new ResourceNotFoundException("Cluster name is mandatory");
         }
 
         String networkName = "cluster_" + dto.networkName();
 
         if (repository.findByNetworkName(networkName).isPresent()) {
-            throw new RuntimeException("Cluster already exists");
+            throw new ResourceAlreadyExistsException("Cluster already exists");
         }
 
         try {
@@ -57,10 +60,10 @@ public class ClusterService {
 
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            throw new RuntimeException("Cluster creation interrupted", e);
+            throw new UnexpectedErrorException("Cluster creation interrupted");
 
         } catch (Exception e) {
-            throw new RuntimeException("Cluster creation error", e);
+            throw new UnexpectedErrorException("Cluster creation error");
         }
 
         Cluster cluster = new Cluster();
@@ -77,7 +80,7 @@ public class ClusterService {
     public ClusterResponseDTO updateCluster(Long id, ClusterRequestDTO dto){
 
         Cluster cluster = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Cluster not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Cluster not found"));
 
         cluster.setDescription(dto.description());
         cluster.setNickname(dto.nickname());
@@ -94,14 +97,14 @@ public class ClusterService {
     }
 
     public ClusterResponseDTO findById(Long id){
-        Cluster cluster = repository.findById(id).orElseThrow(() -> new RuntimeException("Cluster not found"));
+        Cluster cluster = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Cluster not found"));
 
         return toResponseDTO(cluster);
     }
 
     public void deleteCluster(Long id){
         Cluster cluster = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Cluster not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Cluster not found"));
         if(cluster.getNodes() != null && !cluster.getNodes().isEmpty()){
             throw new RuntimeException(
                     "Cluster cannot be deleted because it contains nodes"
