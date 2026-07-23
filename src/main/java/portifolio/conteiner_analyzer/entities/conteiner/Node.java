@@ -18,28 +18,20 @@ public class Node {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JsonView({Views.CustomerView.class, Views.NodeView.class})
     private String name;
 
-    @JsonView({Views.NodeView.class})
     private String ipAddress;
 
-    @JsonView({Views.NodeView.class})
     private String containerId;
 
-    @JsonView({Views.NodeView.class})
     private String image;
 
-    @JsonView({Views.NodeView.class})
     private String ports;
 
-    @JsonView({Views.NodeView.class})
     private String command;
 
-    @JsonView({Views.NodeView.class})
     private LocalDateTime createdAt;
 
-    @JsonView({Views.NodeView.class})
     @Enumerated(EnumType.STRING)
     private NodeStatus status;
 
@@ -48,10 +40,8 @@ public class Node {
 
     @ManyToOne
     @JoinColumn(name = "cluster_id")
-    @JsonView({Views.NodeView.class})
     private Cluster cluster;
 
     @OneToMany(mappedBy = "node")
-    @JsonView({Views.NodeView.class})
     private List<Metric> metrics;
 }

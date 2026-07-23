@@ -21,7 +21,6 @@ public class Cluster {
 
     private String description;
 
-    @JsonView({Views.ClusterView.class, Views.CustomerView.class})
     private String networkName;
 
     @ManyToOne

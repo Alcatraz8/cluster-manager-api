@@ -16,18 +16,17 @@ public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @JsonView({Views.UserView.class, Views.CustomerView.class})
+
     private String name;
-    @JsonView({Views.UserView.class, Views.CustomerView.class})
+
     private String company;
-    @JsonView({Views.UserView.class, Views.CustomerView.class})
+
     private String email;
 
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
 
-    @JsonView(Views.CustomerView.class)
     @OneToMany(mappedBy = "customer")
     private List<Cluster> clusters;
 }

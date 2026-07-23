@@ -15,22 +15,16 @@ public class Metric {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JsonView({Views.MetricView.class})
     private Double cpuUsage;
 
-    @JsonView({Views.MetricView.class})
     private Double memoryUsage;
 
-    @JsonView({Views.MetricView.class})
     private Double diskUsage;
 
-    @JsonView({Views.MetricView.class})
     private Double networkUsage;
 
-    @JsonView({Views.MetricView.class})
     private Double memoryLimit;
 
-    @JsonView({Views.MetricView.class})
     private LocalDateTime timestamp;
 
     @ManyToOne
