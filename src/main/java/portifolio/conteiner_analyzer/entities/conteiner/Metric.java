@@ -1,9 +1,7 @@
 package portifolio.conteiner_analyzer.entities.conteiner;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.*;
 import lombok.Data;
-import portifolio.conteiner_analyzer.configuration.Views;
 
 import java.time.LocalDateTime;
 
@@ -27,7 +25,7 @@ public class Metric {
 
     private LocalDateTime timestamp;
 
-    @ManyToOne
-    @JoinColumn(name = "node_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "node_id", nullable = false)
     private Node node;
 }

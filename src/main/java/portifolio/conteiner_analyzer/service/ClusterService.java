@@ -37,7 +37,7 @@ public class ClusterService {
             throw new ResourceNotFoundException("Cluster name is mandatory");
         }
 
-        String networkName = "cluster_" + dto.networkName();
+        String networkName = dto.networkName();
 
         if (repository.findByNetworkName(networkName).isPresent()) {
             throw new ResourceAlreadyExistsException("Cluster already exists");

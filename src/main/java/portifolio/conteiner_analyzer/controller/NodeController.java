@@ -1,22 +1,18 @@
 package portifolio.conteiner_analyzer.controller;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import portifolio.conteiner_analyzer.DTO.response.NodeResponseDTO;
-import portifolio.conteiner_analyzer.configuration.Views;
-import portifolio.conteiner_analyzer.entities.conteiner.Node;
 import portifolio.conteiner_analyzer.repository.NodeRepository;
 import portifolio.conteiner_analyzer.service.NodeService;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
-@RequestMapping("/nodes")
+@RequestMapping("/node")
 public class NodeController {
 
     @Autowired

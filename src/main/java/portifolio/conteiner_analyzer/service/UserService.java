@@ -6,14 +6,12 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import portifolio.conteiner_analyzer.DTO.admin.AdminUserRequestDTO;
 import portifolio.conteiner_analyzer.DTO.request.UserRequestDTO;
 import portifolio.conteiner_analyzer.DTO.response.LoginResponseDTO;
 import portifolio.conteiner_analyzer.DTO.response.UserResponseDTO;
 import portifolio.conteiner_analyzer.entities.Customer;
 import portifolio.conteiner_analyzer.entities.Role;
 import portifolio.conteiner_analyzer.entities.User;
-import portifolio.conteiner_analyzer.exception.InvalidAuthenticationException;
 import portifolio.conteiner_analyzer.exception.ResourceAlreadyExistsException;
 import portifolio.conteiner_analyzer.exception.ResourceNotFoundException;
 import portifolio.conteiner_analyzer.repository.CustomerRepository;
@@ -76,25 +74,6 @@ public class UserService {
         String token = tokenService.generateToken(user);
 
         return new LoginResponseDTO(token);
-    }
-
-    public UserResponseDTO UpdateUser(Long id, AdminUserRequestDTO dto) {
-
-        User user = repository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-
-        if (repository.existsByLogin(dto.login())
-                && !user.getLogin().equals(dto.login())) {
-            throw new ResourceAlreadyExistsException("User name already exists");
-        }
-
-        user.setLogin(dto.login());
-        user.setPassword(passwordEncoder.encode(dto.password()));
-        user.setRole(dto.role());
-
-        User updatedUser = repository.save(user);
-
-        return toResponseDTO(updatedUser);
     }
 
     public UserResponseDTO updateUser(Long id, UserRequestDTO dto) {

@@ -1,9 +1,7 @@
 package portifolio.conteiner_analyzer.entities.conteiner;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.*;
 import lombok.Data;
-import portifolio.conteiner_analyzer.configuration.Views;
 import portifolio.conteiner_analyzer.entities.Customer;
 
 import java.util.List;

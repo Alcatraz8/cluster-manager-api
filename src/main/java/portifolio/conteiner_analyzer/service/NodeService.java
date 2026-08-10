@@ -84,6 +84,8 @@ public class NodeService {
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Node not found"));
 
+
+
         removeDockerContainer(node.getContainerId());
 
         repository.delete(node);
